@@ -13,10 +13,20 @@ dotenv.config();
 
 //morgan
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://lodgme-client.vercel.app"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
+
+app.post("/", (req, res) => {
+  res.status(200).send("Welcome to LodgeMe API");
+});
 
 //route map middleware
 fs.readdirSync("./routes").map((r) =>

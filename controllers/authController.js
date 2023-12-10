@@ -132,7 +132,7 @@ const forgotPassword = async (req, res) => {
     from: process.env.MY_EMAIL,
     to: user.email,
     subject: "Reset Login password for your LodgeMe account",
-    text: `http://localhost:3000/reset-password/${user._id}/${token}`,
+    text: `${process.env.REACT_FRONTEND_APP}/reset-password/${user._id}/${token}`,
   };
 
   transporter.sendMail(mailOptions, function (error, info) {
