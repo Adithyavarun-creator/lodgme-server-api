@@ -22,6 +22,15 @@ app.post("/", (req, res) => {
   res.status(200).send("Welcome to LodgeMe API");
 });
 
+app.use(function (request, response, next) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 //route map middleware
 fs.readdirSync("./routes").map((r) =>
   app.use("/api", require(`./routes/${r}`))
