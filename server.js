@@ -28,13 +28,15 @@ app.use(function (request, response, next) {
 });
 
 app.post("/", (req, res) => {
-  res.status(200).send("Welcome to LodgeMe API");
+  res.json("Welcome to LodgeMe API");
 });
 
 //route map middleware
 fs.readdirSync("./routes").map((r) =>
   app.use("/api", require(`./routes/${r}`))
 );
+
+
 
 //mongodb connect
 //xrG8MbzGFGmtYMBx
