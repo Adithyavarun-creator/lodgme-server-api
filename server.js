@@ -13,14 +13,14 @@ dotenv.config();
 
 //morgan
 app.use(express.json());
-app.use(
-  cors({
-    origin: ["https://lodgme-client.vercel.app/api"],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true,
-  })
-);
-//app.use(cors());
+// app.use(
+//   cors({
+//     origin: ["https://lodgme-client.vercel.app/api"],
+//     methods: ["GET", "POST", "PUT", "DELETE"],
+//     credentials: true,
+//   })
+// );
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
