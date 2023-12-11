@@ -13,7 +13,11 @@ dotenv.config();
 
 //morgan
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: ["https://lodgme-client.vercel.app"],
+  })
+);
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
