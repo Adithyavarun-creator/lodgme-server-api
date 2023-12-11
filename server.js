@@ -13,14 +13,10 @@ dotenv.config();
 
 //morgan
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
-
-app.post("/", (req, res) => {
-  res.status(200).send("Welcome to LodgeMe API");
-});
 
 app.use(function (request, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
@@ -29,6 +25,10 @@ app.use(function (request, response, next) {
     "Origin, X-Requested-With, Content-Type, Accept"
   );
   next();
+});
+
+app.post("/", (req, res) => {
+  res.status(200).send("Welcome to LodgeMe API");
 });
 
 //route map middleware
