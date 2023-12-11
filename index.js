@@ -13,21 +13,21 @@ dotenv.config();
 
 //morgan
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
 
-app.use(function (request, response, next) {
-  response.header("Access-Control-Allow-Origin", "*");
-  response.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  next();
-});
+// app.use(function (request, response, next) {
+//   response.header("Access-Control-Allow-Origin", "*");
+//   response.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   next();
+// });
 
-app.post("/", (req, res) => {
+app.get("/", (req, res) => {
   res.json("Welcome to LodgeMe API");
 });
 
@@ -35,8 +35,6 @@ app.post("/", (req, res) => {
 fs.readdirSync("./routes").map((r) =>
   app.use("/api", require(`./routes/${r}`))
 );
-
-
 
 //mongodb connect
 //xrG8MbzGFGmtYMBx
