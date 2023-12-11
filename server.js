@@ -20,7 +20,7 @@ app.use(express.json());
 //     credentials: true,
 //   })
 // );
-//app.use(cors());
+app.use(cors());
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());
