@@ -35,7 +35,7 @@ const userSchema = mongoose.Schema(
     },
     gender: {
       type: String,
-      // required: [true, "gender is required"],
+      required: [true, "gender is required"],
     },
     location: {
       type: String,
