@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
 
-const { ObjectId } = mongoose.Schema;
-
 const userSchema = mongoose.Schema(
   {
     firstname: {
@@ -13,6 +11,12 @@ const userSchema = mongoose.Schema(
     lastname: {
       type: String,
       required: [true, "last name is required"],
+      trim: true,
+      text: true,
+    },
+    homeAddress: {
+      type: String,
+      required: [true, "Address is required"],
       trim: true,
       text: true,
     },
@@ -32,7 +36,6 @@ const userSchema = mongoose.Schema(
     gender: {
       type: String,
       required: [true, "gender is required"],
-      trim: true,
     },
     location: {
       type: String,
