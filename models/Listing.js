@@ -10,12 +10,20 @@ const listingSchema = mongoose.Schema(
       type: String,
       text: true,
     },
+    locatedCountry: {
+      type: String,
+      text: true,
+    },
     amenitiesIncluded: {
       type: Array,
       text: true,
     },
     amenitiesNotIncluded: {
       type: Array,
+      text: true,
+    },
+    houseAddress: {
+      type: String,
       text: true,
     },
     houseImages: {
@@ -27,6 +35,10 @@ const listingSchema = mongoose.Schema(
       default: 1,
     },
     baths: {
+      type: Number,
+      default: 1,
+    },
+    livingRoom: {
       type: Number,
       default: 1,
     },
