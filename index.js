@@ -8,6 +8,7 @@ const cors = require("cors");
 const bodyparser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/auth");
+const listingRoute = require("./routes/listing");
 
 const app = express();
 
@@ -51,6 +52,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api", userRoute);
+app.use("/api", listingRoute);
 
 //route map middleware
 // fs.readdirSync("./routes").map((r) =>

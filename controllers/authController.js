@@ -1,75 +1,19 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const Token = require("../models/Token");
+// const Token = require("../models/Token");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const errorHandler = require("../utils/error");
 
 const userRegistration = async (req, res, next) => {
-  // const {
-  //   firstname,
-  //   lastname,
-  //   email,
-  //   gender,
-  //   location,
-  //   contactnumber,
-  //   password,
-  // } = req.body;
-  // const hashedPassword = await bcrypt.hash(password, 12);
-  // try {
-  //   const user = new User({
-  //     firstname,
-  //     lastname,
-  //     email,
-  //     gender,
-  //     location,
-  //     contactnumber,
-  //     password: hashedPassword,
-  //   });
-  //   await user.save();
-
-  //   // const token = new Token({
-  //   //   userId: user._id,
-  //   //   token: crypto.randomBytes(32).toString("hex"),
-  //   // });
-  //   // const url = `http://localhost:3000/${user._id}/verify/${token.token}`;
-  //   // const transporter = nodemailer.createTransport({
-  //   //   service: "gmail",
-  //   //   auth: {
-  //   //     user: "adivarun01@gmail.com",
-  //   //     pass: "etwwaoyiygupvlsr",
-  //   //   },
-  //   // });
-  //   // var mailOptions = {
-  //   //   from: "adivarun01@gmail.com",
-  //   //   to: user.email,
-  //   //   subject: "Account verification for LodgeMe account",
-  //   //   text: `http://localhost:3000/users/${user._id}/verify/${token.token}`,
-  //   // };
-
-  //   // transporter.sendMail(mailOptions, function (error, info) {
-  //   //   if (error) {
-  //   //     console.log(error);
-  //   //   } else {
-  //   //     console.log("Email sent: ");
-  //   //   }
-  //   // });
-
-  //   res.status(200).json({ message: "Registered as a user", ok: true });
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(400).json({
-  //     message: "Error try after sometime",
-  //   });
-  // }
   const {
     firstname,
     lastname,
     email,
     gender,
-    location,
+    country,
     contactnumber,
     homeAddress,
     password,
@@ -81,7 +25,7 @@ const userRegistration = async (req, res, next) => {
     email,
     gender,
     homeAddress,
-    location,
+    country,
     contactnumber,
     password: hashedPassword,
   });
