@@ -5,13 +5,14 @@ const {
   forgotPassword,
   resetPassword,
   verifyUser,
-  signOut,
+  signOut,googleSignIn
 } = require("../controllers/authController");
 
 const router = express.Router();
 
 router.post("/register", userRegistration);
 router.post("/login", userLogin);
+router.post("/googlesignin", googleSignIn);
 router.get("/signout", signOut);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:id/:token", resetPassword);
