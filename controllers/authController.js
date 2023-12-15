@@ -8,6 +8,7 @@ const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const errorHandler = require("../utils/error");
 const FacebookUser = require("../models/FacebookUser");
+const axios = require("axios");
 
 const userRegistration = async (req, res, next) => {
   const {
@@ -132,39 +133,59 @@ const googleSignIn = async (req, res, next) => {
   }
 };
 
+let getUserByFacebookIdAndAccessToken = (accessToken, userId) => {
+  let urlGraphFacebook = `https://graph.facebook.com/v2.11/${userId}?fields=id,name,email&access_token=${accessToken}`;
+  let result = axios.get(urlGraphFacebook);
+  return result;
+};
+
 const facebookSignIn = async (req, res, next) => {
   try {
-    const user = await FacebookUser.findOne({ email: req.body.email });
+    const { userId, accessToken } = req.body;
+    if (!userId || userId == "" || !accessToken || accessToken == "") {
+      return res
+        .status(400)
+        .json({ message: "userId and accessToken are required" });
+    }
+    //get user by facebook userId and accesToken
+    let { data } = await getUserByFacebookIdAndAccessToken(accessToken, userId);
+    //check if user exist
+    var user = await FacebookUser.findOne({ facebookId: data.id });
+    var authObject = {};
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
-      const { password: pass, ...rest } = user._doc;
+      var token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+      authObject = {
+        auth: true,
+        token,
+        user,
+        message: "Successfully logged in.",
+      };
+      //console.log(user);
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
-        .json(rest);
+        .json({ authObject });
     } else {
-      const generatedPassword =
-        Math.random().toString(36).slice(-8) +
-        Math.random().toString(36).slice(-8);
-      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-      const newUser = new FacebookUser({
-        username:
-          req.body.name.split(" ").join("").toLowerCase() +
-          Math.random().toString(36).slice(-4),
-        email: req.body.email,
-        password: hashedPassword,
-        avatar: req.body.photo,
+      user = await FacebookUser.create({
+        username: data.name,
+        email: data.email,
+        facebookId: data.id,
       });
-      await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY);
-      const { password: pass, ...rest } = newUser._doc;
+      var token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+      authObject = {
+        auth: true,
+        token,
+        user,
+        message: "Successfully Registered.",
+      };
       res
         .cookie("access_token", token, { httpOnly: true })
         .status(200)
-        .json(rest);
+        .json({ authObject });
     }
   } catch (error) {
-    next(error);
+    console.log(error);
+    return res.status(500).json({ message: error.message });
   }
 };
 

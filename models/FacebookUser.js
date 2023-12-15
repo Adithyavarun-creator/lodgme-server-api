@@ -4,25 +4,24 @@ const FacebookuserSchema = new mongoose.Schema(
   {
     username: {
       type: String,
-      required: true,
-      unique: true,
     },
     email: {
       type: String,
-      required: true,
-      unique: true,
     },
-    password: {
+    provider: {
       type: String,
-      required: true,
+      default: "Facebook",
     },
-    avatar: {
+    hashedPassword: {
       type: String,
-      default:
-        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    },
+    facebookId: {
+      type: String,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 module.exports = mongoose.model("FacebookUser", FacebookuserSchema);
