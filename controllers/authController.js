@@ -1,14 +1,17 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
+const GoogleUser = require("../models/GoogleUser");
 const jwt = require("jsonwebtoken");
 // const Token = require("../models/Token");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const errorHandler = require("../utils/error");
+const FacebookUser = require("../models/FacebookUser");
 
 const userRegistration = async (req, res, next) => {
   const {
+    username,
     firstname,
     lastname,
     email,
@@ -20,6 +23,7 @@ const userRegistration = async (req, res, next) => {
   } = req.body;
   const hashedPassword = bcryptjs.hashSync(password, 10);
   const newUser = new User({
+    username,
     firstname,
     lastname,
     email,
@@ -94,9 +98,9 @@ const userLogin = async (req, res, next) => {
 
 const googleSignIn = async (req, res, next) => {
   try {
-    const user = await User.findOne({ email: req.body.email });
+    const user = await GoogleUser.findOne({ email: req.body.email });
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
       const { password: pass, ...rest } = user._doc;
       res
         .cookie("access_token", token, { httpOnly: true })
@@ -107,7 +111,7 @@ const googleSignIn = async (req, res, next) => {
         Math.random().toString(36).slice(-8) +
         Math.random().toString(36).slice(-8);
       const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
-      const newUser = new User({
+      const newUser = new GoogleUser({
         username:
           req.body.name.split(" ").join("").toLowerCase() +
           Math.random().toString(36).slice(-4),
@@ -116,7 +120,43 @@ const googleSignIn = async (req, res, next) => {
         avatar: req.body.photo,
       });
       await newUser.save();
-      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY);
+      const { password: pass, ...rest } = newUser._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+const facebookSignIn = async (req, res, next) => {
+  try {
+    const user = await FacebookUser.findOne({ email: req.body.email });
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
+      const { password: pass, ...rest } = user._doc;
+      res
+        .cookie("access_token", token, { httpOnly: true })
+        .status(200)
+        .json(rest);
+    } else {
+      const generatedPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8);
+      const hashedPassword = bcryptjs.hashSync(generatedPassword, 10);
+      const newUser = new FacebookUser({
+        username:
+          req.body.name.split(" ").join("").toLowerCase() +
+          Math.random().toString(36).slice(-4),
+        email: req.body.email,
+        password: hashedPassword,
+        avatar: req.body.photo,
+      });
+      await newUser.save();
+      const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY);
       const { password: pass, ...rest } = newUser._doc;
       res
         .cookie("access_token", token, { httpOnly: true })
@@ -232,4 +272,5 @@ module.exports = {
   verifyUser,
   signOut,
   googleSignIn,
+  facebookSignIn,
 };
