@@ -2,13 +2,13 @@ const bcryptjs = require("bcryptjs");
 const User = require("../models/User");
 const GoogleUser = require("../models/GoogleUser");
 const jwt = require("jsonwebtoken");
-// const Token = require("../models/Token");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
 const errorHandler = require("../utils/error");
 const FacebookUser = require("../models/FacebookUser");
 const axios = require("axios");
+const Token = require("../models/Token");
 
 const userRegistration = async (req, res, next) => {
   const {
@@ -36,50 +36,79 @@ const userRegistration = async (req, res, next) => {
   });
   try {
     await newUser.save();
-    res.status(201).json("User created successfully!");
+    const token = await new Token({
+      userId: newUser._id,
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD,
+      },
+    });
+
+    var mailOptions = {
+      from: process.env.MY_EMAIL,
+      to: newUser.email,
+      subject: "User verification for LodgeMe",
+      text: `${process.env.REACT_FRONTEND_APP}/user/${newUser._id}/verify/${token.token}`,
+    };
+
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent for verification: ");
+      }
+    });
+
+    res
+      .status(201)
+      .json(
+        "An email has been sent to your account ! Please check and verify the link"
+      );
+    // res.status(201).json("User created successfully!");
   } catch (error) {
     next(error);
   }
 };
 
+const verifyUser = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    //console.log(user);
+    if (!user)
+      return res.status(400).json({
+        message: "Invalid token",
+      });
+    const token = await Token.findOne({
+      userId: user._id,
+      token: req.params.token,
+    });
+    if (!token)
+      return res.status(400).json({
+        message: "Invalid token",
+      });
+    await User.updateOne(
+      {
+        _id: user._id,
+        // verified: true,
+      },
+      { $set: { verified: true } }
+    );
+    // await token.remove();
+    res.status(200).json({
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 const userLogin = async (req, res, next) => {
-  // try {
-  //   const { email, password } = req.body;
-  //   const user = await User.findOne({ email });
-  //   if (!user) {
-  //     return res.status(400).json({
-  //       message:
-  //         "The email address you entered is not connected to our LodgeMe community",
-  //     });
-  //   }
-  //   const check = await bcrypt.compare(password, user.password);
-  //   if (!check) {
-  //     return res.status(400).json({
-  //       message: "Invalid credentials, please try again !",
-  //     });
-  //   }
-  //   let token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET_KEY, {
-  //     expiresIn: "7d",
-  //   });
-  //   res.json({
-  //     token,
-  //     user: {
-  //       _id: user._id,
-  //       firstname: user.firstname,
-  //       lastname: user.lastname,
-  //       email: user.email,
-  //       createdAt: user.createdAt,
-  //       gender: user.gender,
-  //       location: user.location,
-  //       contactnumber: user.contactnumber,
-  //     },
-  //   });
-  // } catch (error) {
-  //   console.log(error);
-  //   res.status(500).json({
-  //     message: "Error while logging in",
-  //   });
-  // }
   const { email, password } = req.body;
   try {
     const validUser = await User.findOne({ email });
@@ -253,36 +282,6 @@ const resetPassword = async (req, res) => {
       });
     }
   });
-};
-
-const verifyUser = async (req, res) => {
-  try {
-    const user = await User.findOne({ _id: req.params.id });
-    if (!user)
-      return res.status(400).json({
-        message: "Invalid token",
-      });
-    const token = await Token.findOne({
-      userId: user._id,
-      token: req.params.token,
-    });
-    if (!token)
-      return res.status(400).json({
-        message: "Invalid token",
-      });
-    await User.updateOne({
-      _id: user._id,
-      verified: true,
-    });
-    await token.remove();
-    res.status(200).json({
-      message: "Email verified successfully",
-    });
-  } catch (error) {
-    return res.status(400).json({
-      message: "Internal server error",
-    });
-  }
 };
 
 module.exports = {

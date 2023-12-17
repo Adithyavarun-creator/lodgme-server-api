@@ -1,39 +1,24 @@
-const nodemailer = require("nodemailer");
+// const nodemailer = require("nodemailer");
 
-module.exports = async (email, subject, text) => {
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "adivarun01@gmail.com",
-        pass: "etwwaoyiygupvlsr",
-      },
-    });
+// var transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.MY_EMAIL,
+//     pass: process.env.MY_PASSWORD,
+//   },
+// });
 
-    // await transporter.sendMail({
-    //   from: process.env.USER,
-    //   to: email,
-    //   subject: subject,
-    //   text: text,
-    // });
-    // console.log("email sent successfully");
-    var mailOptions = {
-      from: "adivarun01@gmail.com",
-      to: user.email,
-      subject: "Account verification for registering in LodgeMe account",
-      text: `http://localhost:3000/${user._id}verify/${token}`,
-    };
+// var mailOptions = {
+//   from: process.env.MY_EMAIL,
+//   to: user.email,
+//   subject: "Reset Login password for your LodgeMe account",
+//   text: `${process.env.REACT_FRONTEND_APP}/reset-password/${user._id}/${token}`,
+// };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Email sent: ");
-      }
-    });
-  } catch (error) {
-    console.log("email not sent!");
-    console.log(error);
-    return error;
-  }
-};
+// transporter.sendMail(mailOptions, function (error, info) {
+//   if (error) {
+//     console.log(error);
+//   } else {
+//     console.log("Email sent: ");
+//   }
+// });
