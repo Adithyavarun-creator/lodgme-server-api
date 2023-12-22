@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const mongoose = require("mongoose");
 
 const listingSchema = mongoose.Schema(
@@ -42,6 +43,14 @@ const listingSchema = mongoose.Schema(
       type: Number,
       default: 1,
     },
+    availableFrom: {
+      type: Date,
+      default: Date.now,
+    },
+    availableTill: {
+      type: Date,
+      default: Date.now,
+    },
     pricePerNight: {
       type: Number,
     },
@@ -49,6 +58,10 @@ const listingSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
+    // postedBy: {
+    //   type: ObjectId,
+    //   ref: "User",
+    // },
     publishedUser: {
       type: String,
     },
