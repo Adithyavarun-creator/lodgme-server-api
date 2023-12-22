@@ -43,13 +43,15 @@ const listingSchema = mongoose.Schema(
       type: Number,
       default: 1,
     },
+    noOfpersons: {
+      type: Number,
+      default: 1,
+    },
     availableFrom: {
       type: Date,
-      default: Date.now,
     },
     availableTill: {
       type: Date,
-      default: Date.now,
     },
     pricePerNight: {
       type: Number,

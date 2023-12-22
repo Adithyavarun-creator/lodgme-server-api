@@ -9,4 +9,18 @@ const addListing = async (req, res, next) => {
   }
 };
 
-module.exports = { addListing };
+const searchResultListings = async (req, res, next) => {
+  try {
+    const { locatedCountry, fromdate, todate, persons } = req.body;
+
+    let result = await Listing.find({
+      locatedCountry,
+    });
+    // console.log(result);
+    res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { addListing, searchResultListings };
