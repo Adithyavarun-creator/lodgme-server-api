@@ -15,10 +15,10 @@ const searchResultListings = async (req, res, next) => {
 
     let result = await Listing.find({
       from: {
-        $gte: availableFrom,
+        $gte: fromdate,
       },
       to: {
-        $lte: availableTill,
+        $lte: todate,
       },
       locatedCountry,
     });

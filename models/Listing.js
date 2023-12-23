@@ -7,7 +7,11 @@ const listingSchema = mongoose.Schema(
       type: String,
       text: true,
     },
-    subtitle: {
+    facilities: {
+      type: String,
+      text: true,
+    },
+    type: {
       type: String,
       text: true,
     },
