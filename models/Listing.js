@@ -75,11 +75,11 @@ const listingSchema = mongoose.Schema(
       {
         lat: {
           type: Number,
-          default: 56.9581514,
+          // default: 56.9581514,
         },
         lng: {
           type: Number,
-          default: 24.1399615,
+          // default: 24.1399615,
         },
       },
     ],

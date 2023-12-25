@@ -9,6 +9,18 @@ const addListing = async (req, res, next) => {
   }
 };
 
+const getListing = async (req, res, next) => {
+  try {
+    const listing = await Listing.findById(req.params.id);
+    if (!listing) {
+      return next(errorHandler(404, "Listing not found!"));
+    }
+    res.status(200).json(listing);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const searchResultListings = async (req, res, next) => {
   try {
     const { locatedCountry, fromdate, todate, persons } = req.body;
@@ -29,4 +41,4 @@ const searchResultListings = async (req, res, next) => {
   }
 };
 
-module.exports = { addListing, searchResultListings };
+module.exports = { addListing, searchResultListings, getListing };
