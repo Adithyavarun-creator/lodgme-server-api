@@ -20,7 +20,11 @@ app.use(cookieParser());
 
 app.use(
   cors({
-    origin: ["https://lodgme-client.vercel.app", "http://localhost:3000"],
+    origin: [
+      "https://lodgme-client.vercel.app",
+      "https://lodgme-server-api.vercel.app",
+      "http://localhost:3000",
+    ],
     credentials: true,
   })
 );
