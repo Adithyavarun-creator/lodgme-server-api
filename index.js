@@ -25,8 +25,13 @@ app.use(
       "https://lodgme-server-api.vercel.app",
       "http://localhost:3000",
     ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
+    // allowedHeaders: [
+    //   "Access-Control-Allow-Origin",
+    //   "Content-Type",
+    //   "Authorization",
+    // ],
   })
 );
 // app.use(cors({ credentials: true }));
