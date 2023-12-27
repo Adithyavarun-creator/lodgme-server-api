@@ -1,4 +1,5 @@
 const Listing = require("../models/Listing");
+const errorHandler = require("../utils/error");
 
 const addListing = async (req, res, next) => {
   try {
@@ -41,4 +42,22 @@ const searchResultListings = async (req, res, next) => {
   }
 };
 
-module.exports = { addListing, searchResultListings, getListing };
+const getUserListings = async (req, res, next) => {
+  if (req.user.id === req.params.id) {
+    try {
+      const listings = await Listing.find({ postedBy: req.params.id });
+      res.status(200).json(listings);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, "You can only view your own listings!"));
+  }
+};
+
+module.exports = {
+  addListing,
+  searchResultListings,
+  getListing,
+  getUserListings,
+};

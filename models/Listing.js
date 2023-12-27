@@ -64,12 +64,9 @@ const listingSchema = mongoose.Schema(
       type: String,
       trim: true,
     },
-    // postedBy: {
-    //   type: ObjectId,
-    //   ref: "User",
-    // },
-    publishedUser: {
-      type: String,
+    postedBy: {
+      type: ObjectId,
+      ref: "User",
     },
     mapLocation: [
       {

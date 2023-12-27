@@ -21,8 +21,10 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: ["https://lodgme-client.vercel.app", "http://localhost:3000"],
+    credentials: true,
   })
 );
+// app.use(cors({ credentials: true }));
 app.use(morgan("dev"));
 app.use(bodyparser.urlencoded({ extended: false }));
 app.use(bodyparser.json());

@@ -5,10 +5,10 @@ const jwt = require("jsonwebtoken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
-const errorHandler = require("../utils/error");
 const FacebookUser = require("../models/FacebookUser");
 const axios = require("axios");
 const Token = require("../models/Token");
+const errorHandler = require("../utils/error");
 
 const userRegistration = async (req, res, next) => {
   const {
