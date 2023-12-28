@@ -1,5 +1,8 @@
 const Listing = require("../models/Listing");
 const errorHandler = require("../utils/error");
+const stripe = require("stripe")(
+  "sk_test_51Nd6RMKMYI0Eu7Yoh6CWHxsnl2uCeCAhJZWcjQt12EIfSe4B7IP1f1dJa7Eyp1Wx7fLzTz343TqiWbWP9odZpKxm00UFd08uUc"
+);
 
 const addListing = async (req, res, next) => {
   try {
@@ -56,9 +59,36 @@ const getUserListings = async (req, res, next) => {
   }
 };
 
+const stripeCheckoutSession = async (req, res, next) => {
+  const { selectedHouse, bookingAmount } = req.body;
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ["card"],
+    line_items: [
+      {
+        price_data: {
+          currency: "EUR",
+          product_data: {
+            name: selectedHouse.title,
+          },
+          unit_amount: bookingAmount * 100,
+        },
+        quantity: 1,
+      },
+    ],
+    mode: "payment",
+    success_url: "http://localhost:3000/success",
+    cancel_url: "http://localhost:3000/cancel",
+  });
+  res.send({
+    url: session.url,
+  });
+};
+
 module.exports = {
   addListing,
   searchResultListings,
   getListing,
   getUserListings,
+  stripeCheckoutSession,
 };

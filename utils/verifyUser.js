@@ -28,15 +28,17 @@ const verifyUser = (req, res, next) => {
     .replace(/^\s+|\s+$/gi, "");
 
   try {
-    if (!token) {
+    if (token) {
+      /* Verifying the token. */
+      const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
+      console.log("authenticated user");
+      req.user = decoded;
+    } else {
       return res.status(403).json({
         statusCode: 403,
         msg: "A token is required for authentication",
       });
     }
-    /* Verifying the token. */
-    const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = decoded;
   } catch (err) {
     return res.status(401).json({
       statusCode: 401,
