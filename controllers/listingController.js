@@ -60,7 +60,7 @@ const getUserListings = async (req, res, next) => {
 };
 
 const stripeCheckoutSession = async (req, res, next) => {
-  const { selectedHouse, bookingAmount } = req.body;
+  const { selectedHouse, bookingAmount, mode } = req.body;
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
