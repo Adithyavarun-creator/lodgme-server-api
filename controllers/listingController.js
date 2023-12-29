@@ -1,8 +1,7 @@
 const Listing = require("../models/Listing");
 const errorHandler = require("../utils/error");
-const stripe = require("stripe")(
-  "sk_test_51Nd6RMKMYI0Eu7Yoh6CWHxsnl2uCeCAhJZWcjQt12EIfSe4B7IP1f1dJa7Eyp1Wx7fLzTz343TqiWbWP9odZpKxm00UFd08uUc"
-);
+require("dotenv").config();
+const stripe = require("stripe")(process.env.REACT_STRIPE_SECRET_KEY);
 
 const addListing = async (req, res, next) => {
   try {
@@ -77,8 +76,8 @@ const stripeCheckoutSession = async (req, res, next) => {
       },
     ],
     mode: "payment",
-    success_url: "http://localhost:3000/success",
-    cancel_url: "http://localhost:3000/cancel",
+    success_url: `${process.env.REACT_FRONTEND_APP}/success`,
+    cancel_url: `${process.env.REACT_FRONTEND_APP}/cancel`,
   });
   res.send({
     url: session.url,
