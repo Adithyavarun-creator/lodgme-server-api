@@ -22,7 +22,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
 /* It checks if the token is valid and if it is, it decodes it and attaches the decoded token to the request object */
-const verifyUser = (req, res, next) => {
+const verifyToken = (req, res, next) => {
   const token = String(req.headers.authorization)
     .replace(/^bearer|^jwt/i, "")
     .replace(/^\s+|\s+$/gi, "");
@@ -34,6 +34,7 @@ const verifyUser = (req, res, next) => {
       console.log("authenticated user");
       req.user = decoded;
     } else {
+      console.log("unauthenticated user");
       return res.status(403).json({
         statusCode: 403,
         msg: "A token is required for authentication",
@@ -48,7 +49,7 @@ const verifyUser = (req, res, next) => {
   return next();
 };
 
-module.exports = verifyUser;
+module.exports = verifyToken;
 
 // const User = require("../models/User");
 // require("dotenv").config();

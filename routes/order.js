@@ -1,5 +1,5 @@
 const express = require("express");
-const verifyUser = require("../utils/verifyUser");
+const verifyUser = require("../utils/verifyToken");
 const { createOrder, getUserOrder } = require("../controllers/orderController");
 
 const router = express.Router();

@@ -51,7 +51,7 @@ const userRegistration = async (req, res, next) => {
     var mailOptions = {
       from: process.env.MY_EMAIL,
       to: newUser.email,
-      subject: "User verification for LodgeMe",
+      subject: "User verification for Lodgeme",
       text: `${process.env.REACT_FRONTEND_APP}/user/${newUser._id}/verify/${token.token}`,
     };
 
@@ -108,6 +108,33 @@ const verifyUser = async (req, res) => {
   }
 };
 
+const verifyUserPhone = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    //console.log(user);
+    if (!user)
+      return res.status(400).json({
+        message: "Invalid User for verification",
+      });
+
+    await User.updateOne(
+      {
+        _id: user._id,
+        // verified: true,
+      },
+      { $set: { mobileVerified: true } }
+    );
+    // await token.remove();
+    res.status(200).json({
+      message: "Phone number verified successfully",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 const userLogin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
@@ -137,10 +164,15 @@ const googleSignIn = async (req, res, next) => {
     if (user) {
       const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
       const { password: pass, ...rest } = user._doc;
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json(rest);
+      // res
+      //   .cookie("access_token", token, { httpOnly: true })
+      //   .status(200)
+      //   .json(rest);
+      return res.status(200).json({
+        msg: "Login successful",
+        token,
+        user,
+      });
     } else {
       const generatedPassword =
         Math.random().toString(36).slice(-8) +
@@ -157,10 +189,15 @@ const googleSignIn = async (req, res, next) => {
       await newUser.save();
       const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET_KEY);
       const { password: pass, ...rest } = newUser._doc;
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json(rest);
+      // res
+      //   .cookie("access_token", token, { httpOnly: true })
+      //   .status(200)
+      //   .json(rest);
+      return res.status(200).json({
+        msg: "Login successful",
+        token,
+        user,
+      });
     }
   } catch (error) {
     next(error);
@@ -195,10 +232,15 @@ const facebookSignIn = async (req, res, next) => {
         message: "Successfully logged in.",
       };
       //console.log(user);
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json({ authObject });
+      // res
+      //   .cookie("access_token", token, { httpOnly: true })
+      //   .status(200)
+      //   .json({ authObject });
+      return res.status(200).json({
+        msg: "Login successful",
+        token,
+        user,
+      });
     } else {
       user = await FacebookUser.create({
         username: data.name,
@@ -212,10 +254,15 @@ const facebookSignIn = async (req, res, next) => {
         user,
         message: "Successfully Registered.",
       };
-      res
-        .cookie("access_token", token, { httpOnly: true })
-        .status(200)
-        .json({ authObject });
+      // res
+      //   .cookie("access_token", token, { httpOnly: true })
+      //   .status(200)
+      //   .json({ authObject });
+      return res.status(200).json({
+        msg: "Login successful",
+        token,
+        user,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -289,6 +336,46 @@ const resetPassword = async (req, res) => {
   });
 };
 
+const updateUser = async (req, res, next) => {
+  // console.log(req.user.id);
+  // console.log(req.params.id);
+  if (req.user.id !== req.params.id)
+    return next(
+      errorHandler(401, "You are allowed to edit only your own account!")
+    );
+  try {
+    // console.log(req.body.country);
+    if (req.body.password) {
+      req.body.password = bcryptjs.hashSync(req.body.password, 10);
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          firstname: req.body.firstname,
+          country: req.body.country,
+          lastname: req.body.lastname,
+          username: req.body.username,
+          homeAddress: req.body.homeAddress,
+          email: req.body.email,
+          password: req.body.password,
+          profilePic: req.body.profilePic,
+          contactnumber: req.body.contactnumber,
+          gender: req.body.gender,
+        },
+      },
+      { new: true }
+    );
+
+    const { password, ...rest } = updatedUser._doc;
+
+    res.status(200).json(rest);
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
@@ -298,4 +385,6 @@ module.exports = {
   signOut,
   googleSignIn,
   facebookSignIn,
+  updateUser,
+  verifyUserPhone,
 };

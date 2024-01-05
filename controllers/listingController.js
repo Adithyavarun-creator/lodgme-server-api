@@ -1,4 +1,5 @@
 const Listing = require("../models/Listing");
+const User = require("../models/User");
 const errorHandler = require("../utils/error");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.REACT_STRIPE_SECRET_KEY);
@@ -30,7 +31,11 @@ const getListing = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, "Listing not found!"));
     }
-    res.status(200).json(listing);
+    // const { postedBy } = listing;
+    // const user = await User.findById(postedBy._id);
+    // console.log(user);
+    //console.log(listing);
+    res.status(200).json({ listing });
   } catch (error) {
     next(error);
   }
@@ -38,7 +43,7 @@ const getListing = async (req, res, next) => {
 
 const searchResultListings = async (req, res, next) => {
   try {
-    const { locatedCountry, fromdate, todate, persons } = req.body;
+    const { locatedCountry, fromdate, todate } = req.body;
 
     let result = await Listing.find({
       from: {
@@ -49,8 +54,44 @@ const searchResultListings = async (req, res, next) => {
       },
       locatedCountry,
     });
-    // console.log(result);
     res.json(result);
+    // const { locatedCountry, date } = req.body;
+    // let result = await Listing.find({
+    //   from: {
+    //     $gte: new Date(),
+    //   },
+    //   locatedCountry,
+    // });
+    // res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const searchFilterListings = async (req, res, next) => {
+  //console.log(req.query);
+  try {
+    let type = req.query.type;
+
+    if (type === undefined || type === "all") {
+      type = {
+        $in: ["furnished", "studio", "modern", "flat", "hotel", "hostel"],
+      };
+    }
+
+    const searchTerm = req.query.searchTerm || "";
+
+    const sort = req.query.sort || "createdAt";
+
+    const order = req.query.order || "desc";
+
+    const listings = await Listing.find({
+      locatedCountry: { $regex: searchTerm, $options: "i" },
+      type: { $regex: type, $options: "i" },
+    }).sort({ [sort]: order });
+
+    //console.log({ listings });
+    return res.status(200).json(listings);
   } catch (error) {
     next(error);
   }
@@ -103,4 +144,5 @@ module.exports = {
   getUserListings,
   stripeCheckoutSession,
   getAllListings,
+  searchFilterListings,
 };

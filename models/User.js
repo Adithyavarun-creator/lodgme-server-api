@@ -31,6 +31,11 @@ const userSchema = mongoose.Schema(
       required: [true, "email is required"],
       trim: true,
     },
+    profilePic: {
+      type: String,
+      default:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJJ7NRetidOXGwJVnAJXbKD-aTCpm2iDzT6g&usqp=CAU",
+    },
     contactnumber: {
       type: Number,
       required: true,
@@ -50,6 +55,7 @@ const userSchema = mongoose.Schema(
       text: true,
     },
     verified: { type: Boolean, default: false },
+    mobileVerified: { type: Boolean, default: false },
   },
   {
     timestamps: true,
