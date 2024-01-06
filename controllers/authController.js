@@ -172,6 +172,7 @@ const googleSignIn = async (req, res, next) => {
         msg: "Login successful",
         token,
         user,
+        provider: "google",
       });
     } else {
       const generatedPassword =
@@ -197,6 +198,7 @@ const googleSignIn = async (req, res, next) => {
         msg: "Login successful",
         token,
         user,
+        provider: "google",
       });
     }
   } catch (error) {
@@ -230,6 +232,7 @@ const facebookSignIn = async (req, res, next) => {
         token,
         user,
         message: "Successfully logged in.",
+        provider: "facebook",
       };
       //console.log(user);
       // res
@@ -237,9 +240,7 @@ const facebookSignIn = async (req, res, next) => {
       //   .status(200)
       //   .json({ authObject });
       return res.status(200).json({
-        msg: "Login successful",
-        token,
-        user,
+        authObject,
       });
     } else {
       user = await FacebookUser.create({
@@ -253,15 +254,14 @@ const facebookSignIn = async (req, res, next) => {
         token,
         user,
         message: "Successfully Registered.",
+        provider: "facebook",
       };
       // res
       //   .cookie("access_token", token, { httpOnly: true })
       //   .status(200)
       //   .json({ authObject });
       return res.status(200).json({
-        msg: "Login successful",
-        token,
-        user,
+        authObject,
       });
     }
   } catch (error) {

@@ -111,6 +111,48 @@ const getUserListings = async (req, res, next) => {
   }
 };
 
+const updateListing = async (req, res, next) => {
+  //client shows undesfined on response but function works properly
+  let listing = await Listing.findById(req.params.id);
+  if (!listing) {
+    return next(errorHandler(404, "Listing not found!"));
+  }
+  //if (req.user.id !== listing.postedBy) {
+  // return next(errorHandler(401, "You can only update your own listings!"));
+  //}
+
+  try {
+    const updatedListing = await Listing.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    // console.log(updatedListing);
+    res.status(200).json(updatedListing);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteListing = async (req, res, next) => {
+  const listing = await Listing.findById(req.params.id);
+
+  if (!listing) {
+    return next(errorHandler(404, "Listing not found!"));
+  }
+
+  if (req.user.id !== listing.postedBy) {
+    return next(errorHandler(401, "You can only delete your own listings!"));
+  }
+
+  try {
+    await Listing.findByIdAndDelete(req.params.id);
+    res.status(200).json("Listing has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
+
 const stripeCheckoutSession = async (req, res, next) => {
   const { selectedHouse, bookingAmount, mode } = req.body;
 
@@ -145,4 +187,6 @@ module.exports = {
   stripeCheckoutSession,
   getAllListings,
   searchFilterListings,
+  updateListing,
+  deleteListing,
 };

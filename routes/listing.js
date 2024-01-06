@@ -7,6 +7,8 @@ const {
   stripeCheckoutSession,
   getAllListings,
   searchFilterListings,
+  updateListing,
+  deleteListing,
 } = require("../controllers/listingController");
 const verifyToken = require("../utils/verifyToken");
 
@@ -19,6 +21,8 @@ router.get("/get", searchFilterListings);
 router.get("/get/:id", getListing);
 router.get("/listings", getAllListings);
 router.get("/listings/:id", verifyToken, getUserListings);
+router.delete("/delete/:id", verifyToken, deleteListing);
+router.post("/listing-update/:id", verifyToken, updateListing);
 router.post("/create-checkout-session", stripeCheckoutSession);
 
 module.exports = router;
