@@ -10,7 +10,7 @@ const FacebookuserSchema = new mongoose.Schema(
     },
     provider: {
       type: String,
-      default: "Facebook",
+      default: "facebook",
     },
     hashedPassword: {
       type: String,

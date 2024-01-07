@@ -1,11 +1,15 @@
 const express = require("express");
-const verifyUser = require("../utils/verifyToken");
-const { createOrder, getUserOrder } = require("../controllers/orderController");
+const verifyToken = require("../utils/verifyToken");
+const {
+  createOrder,
+  getUserOrder,
+  createGoogleaccountOrder,
+} = require("../controllers/orderController");
 
 const router = express.Router();
 
-//verifyUser;
-router.post("/create-order", verifyUser, createOrder);
-router.get("/order/:id", verifyUser, getUserOrder);
+router.post("/create-order", verifyToken, createOrder);
+router.post("/create-google-order", verifyToken, createGoogleaccountOrder);
+router.get("/order/:id", verifyToken, getUserOrder);
 
 module.exports = router;

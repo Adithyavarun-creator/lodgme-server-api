@@ -16,6 +16,10 @@ const GoogleuserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    provider: {
+      type: String,
+      default: "google",
+    },
     avatar: {
       type: String,
       default:

@@ -1,9 +1,19 @@
+const GoogleOrder = require("../models/GoogleOrder");
 const Order = require("../models/Order");
 const errorHandler = require("../utils/error");
 
 const createOrder = async (req, res, next) => {
   try {
     const listing = await Order.create(req.body);
+    return res.status(201).json(listing);
+  } catch (error) {
+    next(error);
+  }
+};
+
+const createGoogleaccountOrder = async (req, res, next) => {
+  try {
+    const listing = await GoogleOrder.create(req.body);
     return res.status(201).json(listing);
   } catch (error) {
     next(error);
@@ -23,4 +33,4 @@ const getUserOrder = async (req, res, next) => {
   }
 };
 
-module.exports = { createOrder, getUserOrder };
+module.exports = { createOrder, getUserOrder, createGoogleaccountOrder };
