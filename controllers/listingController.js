@@ -173,6 +173,8 @@ const stripeCheckoutSession = async (req, res, next) => {
     mode: "payment",
     success_url: `${process.env.REACT_FRONTEND_APP}/success`,
     cancel_url: `${process.env.REACT_FRONTEND_APP}/cancel`,
+    // success_url: `http://localhost:3000/success`,
+    // cancel_url: `http://localhost:3000/cancel`,
   });
   res.send({
     url: session.url,

@@ -48,6 +48,10 @@ const userSchema = mongoose.Schema(
       type: String,
       required: [true, "gender is required"],
     },
+    provider: {
+      type: String,
+      default: "lodgeme",
+    },
     country: {
       type: String,
       required: [true, "country is required"],
