@@ -10,6 +10,7 @@ const cookieParser = require("cookie-parser");
 const userRoute = require("./routes/auth");
 const listingRoute = require("./routes/listing");
 const orderRoute = require("./routes/order");
+// const reviewRoute = require("./routes/review");
 
 const app = express();
 
@@ -67,6 +68,7 @@ app.get("/", (req, res) => {
 app.use("/api", userRoute);
 app.use("/api", listingRoute);
 app.use("/api", orderRoute);
+// app.use("/api", reviewRoute);
 
 //route map middleware
 // fs.readdirSync("./routes").map((r) =>

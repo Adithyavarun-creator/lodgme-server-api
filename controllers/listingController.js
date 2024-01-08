@@ -31,11 +31,11 @@ const getListing = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, "Listing not found!"));
     }
-    // const { postedBy } = listing;
-    // const user = await User.findById(postedBy._id);
+    const { postedBy } = listing;
+    const user = await User.findById(postedBy._id);
     // console.log(user);
-    //console.log(listing);
-    res.status(200).json({ listing });
+    // console.log(listing);
+    res.status(200).json({ listing, user });
   } catch (error) {
     next(error);
   }
@@ -153,6 +153,46 @@ const deleteListing = async (req, res, next) => {
   }
 };
 
+const addReview = async (req, res, next) => {
+  // console.log(req.body);
+  const {
+    rating,
+    reviewDescription,
+    listingId,
+    reviewerFirstname,
+    reviewerCountry,
+    reviewerLastname,
+  } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    //console.log(user.firstname, user.lastname);
+
+    const newReview = await Listing.findByIdAndUpdate(
+      listingId,
+      {
+        $push: {
+          reviews: {
+            rating,
+            reviewDescription,
+            reviewBy: req.user.id,
+            reviewerFirstname,
+            reviewerLastname,
+            reviewerCountry,
+          },
+        },
+      },
+      { new: true }
+    );
+    //.populate("reviews.reviewBy");
+    // const user = await User.findById(req.user.id);
+    // console.log(user.firstname, user.lastname);
+
+    res.status(200).json({ newReview });
+  } catch (error) {
+    return next(errorHandler(401, "You are not authorized to review !"));
+  }
+};
+
 const stripeCheckoutSession = async (req, res, next) => {
   const { selectedHouse, bookingAmount, mode } = req.body;
 
@@ -190,5 +230,6 @@ module.exports = {
   getAllListings,
   searchFilterListings,
   updateListing,
+  addReview,
   deleteListing,
 };

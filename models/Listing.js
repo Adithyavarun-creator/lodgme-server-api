@@ -68,6 +68,33 @@ const listingSchema = mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+    reviews: [
+      {
+        rating: {
+          type: Number,
+        },
+        reviewDescription: {
+          type: String,
+        },
+        reviewBy: {
+          type: ObjectId,
+          ref: "User",
+        },
+        reviewerFirstname: {
+          type: String,
+        },
+        reviewerLastname: {
+          type: String,
+        },
+        reviewerCountry: {
+          type: String,
+        },
+        reviewedAt: {
+          type: Date,
+          default: new Date(),
+        },
+      },
+    ],
     mapLocation: [
       {
         lat: {

@@ -9,6 +9,7 @@ const {
   searchFilterListings,
   updateListing,
   deleteListing,
+  addReview,
 } = require("../controllers/listingController");
 const verifyToken = require("../utils/verifyToken");
 
@@ -24,5 +25,6 @@ router.get("/listings/:id", verifyToken, getUserListings);
 router.delete("/delete/:id", verifyToken, deleteListing);
 router.post("/listing-update/:id", verifyToken, updateListing);
 router.post("/create-checkout-session", stripeCheckoutSession);
+router.post("/add-review", verifyToken, addReview);
 
 module.exports = router;
