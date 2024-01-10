@@ -2,7 +2,6 @@ const Listing = require("../models/Listing");
 const errorHandler = require("../utils/error");
 
 const addReview = async (req, res, next) => {
-  console.log(req.body);
   const { rating, reviewDescription, reviewBy, listingId } = req.body;
 
   try {

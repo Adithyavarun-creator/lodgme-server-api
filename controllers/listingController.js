@@ -111,15 +111,34 @@ const getUserListings = async (req, res, next) => {
   }
 };
 
+const getonlyId = async (id) => {
+  if (!id) throw "You must provide an id to search for";
+
+  // const restaurantsCollection = await restaurants();
+  const res = await Listing.findOne({ postedBy: id });
+  // console.log(res);
+  if (res === null) throw "No restaurant with that id";
+  res._id = res._id.toString().replace(/ObjectId\("(.*)"\)/, "$1");
+  return res;
+};
+
 const updateListing = async (req, res, next) => {
   //client shows undesfined on response but function works properly
   let listing = await Listing.findById(req.params.id);
+
   if (!listing) {
     return next(errorHandler(404, "Listing not found!"));
   }
-  //if (req.user.id !== listing.postedBy) {
-  // return next(errorHandler(401, "You can only update your own listings!"));
-  //}
+
+  // console.log(req.user.id);
+  // console.log(listing.postedBy.toString().replace(/ObjectId\("(.*)"\)/, "$1"));
+
+  if (
+    req.user.id !==
+    listing.postedBy.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  ) {
+    return next(errorHandler(401, "You can only update your own listings!"));
+  }
 
   try {
     const updatedListing = await Listing.findByIdAndUpdate(

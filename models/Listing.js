@@ -21,11 +21,11 @@ const listingSchema = mongoose.Schema(
     },
     amenitiesIncluded: {
       type: Array,
-      text: true,
+      default: [],
     },
     amenitiesNotIncluded: {
       type: Array,
-      text: true,
+      default: [],
     },
     houseAddress: {
       type: String,
@@ -68,6 +68,7 @@ const listingSchema = mongoose.Schema(
       type: ObjectId,
       ref: "User",
     },
+
     reviews: [
       {
         rating: {
