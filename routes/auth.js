@@ -10,6 +10,7 @@ const {
   facebookSignIn,
   updateUser,
   verifyUserPhone,
+  verifyUserInDashboard,
 } = require("../controllers/authController");
 const verifyToken = require("../utils/verifyToken");
 
@@ -24,6 +25,7 @@ router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:id/:token", resetPassword);
 router.post("/user-phone/:id", verifyUserPhone);
 router.get("/:id/verify/:token", verifyUser);
+router.post("/email-verify/:id", verifyUserInDashboard);
 router.post("/update/:id", verifyToken, updateUser);
 
 module.exports = router;

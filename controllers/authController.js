@@ -51,7 +51,7 @@ const userRegistration = async (req, res, next) => {
     var mailOptions = {
       from: process.env.MY_EMAIL,
       to: newUser.email,
-      subject: "User verification for Lodgeme",
+      subject: "User Email verification for Lodgeme",
       text: `${process.env.REACT_FRONTEND_APP}/user/${newUser._id}/verify/${token.token}`,
     };
 
@@ -95,12 +95,77 @@ const verifyUser = async (req, res) => {
         _id: user._id,
         // verified: true,
       },
-      { $set: { verified: true } }
+      { $set: { emailVerified: true } }
     );
     // await token.remove();
     res.status(200).json({
       message: "Email verified successfully",
     });
+  } catch (error) {
+    return res.status(400).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const verifyUserInDashboard = async (req, res) => {
+  // console.log(req.params.id);
+  try {
+    const user = await User.findOne({ _id: req.params.id });
+    //const user = await User.findOne({ email });
+    console.log(user);
+    if (!user)
+      return res.status(400).json({
+        message: "Invalid token",
+      });
+    const token = await new Token({
+      userId: user._id,
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.MY_EMAIL,
+        pass: process.env.MY_PASSWORD,
+      },
+    });
+
+    var mailOptions = {
+      from: process.env.MY_EMAIL,
+      to: user.email,
+      subject: "User Email verification for Lodgeme",
+      text: `${process.env.REACT_FRONTEND_APP}/user/${user._id}/verify/${token.token}`,
+    };
+
+    
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log("Email sent for verification: ");
+      }
+    });
+
+    return res
+      .status(201)
+      .json(
+        "An email has been sent to your account ! Please check and verify the link"
+      );
+
+    // //content
+    // if (!token)
+    //   return res.status(400).json({
+    //     message: "Invalid token",
+    //   });
+    // await User.updateOne(
+    //   {
+    //     _id: user._id,
+    //   },
+    //   { $set: { emailVerified: true } }
+    // );
+    // return res.status(200).json({
+    //   message: "Email sent to your account",
+    // });
   } catch (error) {
     return res.status(400).json({
       message: "Internal server error",
@@ -396,6 +461,7 @@ module.exports = {
   forgotPassword,
   resetPassword,
   verifyUser,
+  verifyUserInDashboard,
   signOut,
   googleSignIn,
   facebookSignIn,
