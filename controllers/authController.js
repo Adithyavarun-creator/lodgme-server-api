@@ -9,6 +9,7 @@ const FacebookUser = require("../models/FacebookUser");
 const axios = require("axios");
 const Token = require("../models/Token");
 const errorHandler = require("../utils/error");
+const Listing = require("../models/Listing");
 
 const userRegistration = async (req, res, next) => {
   const {
@@ -137,7 +138,6 @@ const verifyUserInDashboard = async (req, res) => {
       text: `${process.env.REACT_FRONTEND_APP}/user/${user._id}/verify/${token.token}`,
     };
 
-    
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
         console.log(error);
@@ -455,6 +455,22 @@ const getUser = async (req, res, next) => {
   }
 };
 
+const deleteUser = async (req, res) => {
+  if (
+    req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  )
+    return next(errorHandler(401, "You can only delete your own account!"));
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    await Listing.findByIdAndDelete(req.params.id);
+
+    // res.clearCookie("access_token");
+    res.status(200).json("User has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
@@ -468,4 +484,5 @@ module.exports = {
   getUser,
   updateUser,
   verifyUserPhone,
+  deleteUser,
 };

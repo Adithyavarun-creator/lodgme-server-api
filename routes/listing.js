@@ -22,7 +22,7 @@ router.get("/get", searchFilterListings);
 router.get("/get/:id", getListing);
 router.get("/listings", getAllListings);
 router.get("/listings/:id", verifyToken, getUserListings);
-router.delete("/delete/:id", verifyToken, deleteListing);
+router.delete("/listing/delete/:id", verifyToken, deleteListing);
 router.post("/listing-update/:id", verifyToken, updateListing);
 router.post("/create-checkout-session", stripeCheckoutSession);
 router.post("/add-review", verifyToken, addReview);

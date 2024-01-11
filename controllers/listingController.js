@@ -156,11 +156,17 @@ const updateListing = async (req, res, next) => {
 const deleteListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
 
+  // console.log(listing.postedBy);
+  // console.log(req.user.id);
+
   if (!listing) {
     return next(errorHandler(404, "Listing not found!"));
   }
 
-  if (req.user.id !== listing.postedBy) {
+  if (
+    req.user.id !==
+    listing.postedBy.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  ) {
     return next(errorHandler(401, "You can only delete your own listings!"));
   }
 
