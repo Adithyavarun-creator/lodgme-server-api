@@ -3,6 +3,7 @@ const User = require("../models/User");
 const errorHandler = require("../utils/error");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.REACT_STRIPE_SECRET_KEY);
+const moment = require("moment");
 
 const addListing = async (req, res, next) => {
   try {
@@ -69,7 +70,7 @@ const searchResultListings = async (req, res, next) => {
 };
 
 const searchFilterListings = async (req, res, next) => {
-  //console.log(req.query);
+  console.log(req.query);
   try {
     let type = req.query.type;
 
