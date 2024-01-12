@@ -21,11 +21,11 @@ const listingSchema = mongoose.Schema(
     },
     amenitiesIncluded: {
       type: Array,
-      default: [],
+      default: ["Geyser", "Air Conditioning", "Kitchen"],
     },
     amenitiesNotIncluded: {
       type: Array,
-      default: [],
+      default: ["Smoking", "Pets", "Drugs"],
     },
     houseAddress: {
       type: String,

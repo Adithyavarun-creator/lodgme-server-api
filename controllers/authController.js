@@ -237,7 +237,6 @@ const googleSignIn = async (req, res, next) => {
         msg: "Login successful",
         token,
         user,
-        provider: "google",
       });
     } else {
       const generatedPassword =
@@ -263,7 +262,6 @@ const googleSignIn = async (req, res, next) => {
         msg: "Login successful",
         token,
         user,
-        provider: "google",
       });
     }
   } catch (error) {
@@ -297,7 +295,6 @@ const facebookSignIn = async (req, res, next) => {
         token,
         user,
         message: "Successfully logged in.",
-        provider: "facebook",
       };
       //console.log(user);
       // res
@@ -319,7 +316,6 @@ const facebookSignIn = async (req, res, next) => {
         token,
         user,
         message: "Successfully Registered.",
-        provider: "facebook",
       };
       // res
       //   .cookie("access_token", token, { httpOnly: true })
@@ -471,6 +467,41 @@ const deleteUser = async (req, res) => {
   }
 };
 
+const deleteFacebookUser = async (req, res) => {
+  // if (
+  //   req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  // )
+  //   next(errorHandler(401, "You can only delete your own account!"));
+  const user = await FacebookUser.findById(req.params.id);
+
+  try {
+    await FacebookUser.findByIdAndDelete(user);
+    // await Listing.findByIdAndDelete(req.params.id);
+
+    // res.clearCookie("access_token");
+    res.status(200).json("User has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteGoogleUser = async (req, res) => {
+  if (
+    req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  )
+    return next(errorHandler(401, "You can only delete your own account!"));
+
+  try {
+    await GoogleUser.findByIdAndDelete(req.params.id);
+    // await Listing.findByIdAndDelete(req.params.id);
+
+    // res.clearCookie("access_token");
+    res.status(200).json("User has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   userRegistration,
   userLogin,
@@ -485,4 +516,6 @@ module.exports = {
   updateUser,
   verifyUserPhone,
   deleteUser,
+  deleteFacebookUser,
+  deleteGoogleUser,
 };

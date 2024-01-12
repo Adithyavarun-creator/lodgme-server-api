@@ -12,6 +12,8 @@ const {
   verifyUserPhone,
   verifyUserInDashboard,
   deleteUser,
+  deleteFacebookUser,
+  deleteGoogleUser,
 } = require("../controllers/authController");
 const verifyToken = require("../utils/verifyToken");
 
@@ -29,5 +31,7 @@ router.get("/:id/verify/:token", verifyUser);
 router.post("/email-verify/:id", verifyUserInDashboard);
 router.post("/update/:id", verifyToken, updateUser);
 router.delete("/user/delete/:id", verifyToken, deleteUser);
+router.delete("/facebook-user/delete/:id", verifyToken, deleteFacebookUser);
+router.delete("/google-user/delete/:id", verifyToken, deleteGoogleUser);
 
 module.exports = router;
