@@ -26,6 +26,7 @@ app.use(
       "https://lodgme-client.vercel.app",
       "https://lodgme-server-api.vercel.app",
       "http://localhost:3000",
+      "https://lodgeme.com",
     ],
     // methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
