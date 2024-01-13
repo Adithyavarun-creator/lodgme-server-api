@@ -19,6 +19,7 @@ const getAllListings = async (req, res, next) => {
     if (!listing) {
       return next(errorHandler(404, "Listing not found!"));
     }
+
     res.status(200).json(listing);
   } catch (error) {
     next(error);
@@ -155,10 +156,8 @@ const updateListing = async (req, res, next) => {
 
 const deleteListing = async (req, res, next) => {
   const listing = await Listing.findById(req.params.id);
-
   // console.log(listing.postedBy);
   // console.log(req.user.id);
-
   if (!listing) {
     return next(errorHandler(404, "Listing not found!"));
   }
