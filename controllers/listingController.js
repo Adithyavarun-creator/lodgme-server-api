@@ -3,7 +3,6 @@ const User = require("../models/User");
 const errorHandler = require("../utils/error");
 require("dotenv").config();
 const stripe = require("stripe")(process.env.REACT_STRIPE_SECRET_KEY);
-const moment = require("moment");
 
 const addListing = async (req, res, next) => {
   try {

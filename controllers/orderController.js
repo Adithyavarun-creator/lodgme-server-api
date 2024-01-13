@@ -44,17 +44,21 @@ const getUserOrder = async (req, res, next) => {
 };
 
 const getGoogleUserOrder = async (req, res, next) => {
-  // if (req.user.id === req.params.id) {
-  try {
-    const order = await GoogleOrder.find({ bookedBy: req.params.id });
-    res.status(200).json(order);
-  } catch (error) {
-    next(error);
+  // console.log(req.user.id);
+  // console.log(req.params.id);
+
+  if (req.user.id === req.params.id) {
+    try {
+      const order = await GoogleOrder.find({
+        bookedBy: req.params.id,
+      });
+      res.status(200).json(order);
+    } catch (error) {
+      next(error);
+    }
+  } else {
+    return next(errorHandler(401, "You can only view your own listings!"));
   }
-  //   } else {
-  //     return next(errorHandler(401, "You can only view your own listings!"));
-  //   }
-  // };
 };
 
 const getFacebookUserOrder = async (req, res, next) => {

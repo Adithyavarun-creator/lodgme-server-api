@@ -236,7 +236,7 @@ const googleSignIn = async (req, res, next) => {
       return res.status(200).json({
         msg: "Login successful",
         token,
-        user,
+        user: rest,
       });
     } else {
       const generatedPassword =
@@ -468,15 +468,18 @@ const deleteUser = async (req, res) => {
 };
 
 const deleteFacebookUser = async (req, res) => {
-  // if (
-  //   req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
-  // )
-  //   next(errorHandler(401, "You can only delete your own account!"));
-  const user = await FacebookUser.findById(req.params.id);
+  // console.log(req.user.id);
+  //console.log(req.params.id);
+
+  if (
+    req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
+  )
+    return next(errorHandler(401, "You can only delete your own account!"));
+  // const user = await FacebookUser.findById(req.params.id);
 
   try {
-    await FacebookUser.findByIdAndDelete(user);
-    // await Listing.findByIdAndDelete(req.params.id);
+    await FacebookUser.findByIdAndDelete(req.params.id);
+    await Listing.findByIdAndDelete(req.params.id);
 
     // res.clearCookie("access_token");
     res.status(200).json("User has been deleted!");
@@ -493,7 +496,7 @@ const deleteGoogleUser = async (req, res) => {
 
   try {
     await GoogleUser.findByIdAndDelete(req.params.id);
-    // await Listing.findByIdAndDelete(req.params.id);
+    await Listing.findByIdAndDelete({ bookedBy: req.params.id });
 
     // res.clearCookie("access_token");
     res.status(200).json("User has been deleted!");
