@@ -209,15 +209,15 @@ const userLogin = async (req, res, next) => {
     if (!validPassword) return next(errorHandler(401, "Wrong credentials!"));
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY);
     // const { password: pass, ...rest } = user._doc;
-    // res
-    //   .cookie("access_token", token, { httpOnly: true })
-    //   .status(200)
-    //   .json({ user, token });
-    return res.status(200).json({
-      msg: "Login successful",
-      token,
-      user,
-    });
+    res
+      .cookie("access_token", token, { httpOnly: true })
+      .status(200)
+      .json({ msg: "Login successful", token, user });
+    // return res.status(200).json({
+    //   msg: "Login successful",
+    //   token,
+    //   user,
+    // });
   } catch (error) {
     next(error);
   }
@@ -474,16 +474,15 @@ const deleteFacebookUser = async (req, res) => {
     req.user.id !== req.params.id.toString().replace(/ObjectId\("(.*)"\)/, "$1")
   )
     return next(errorHandler(401, "You can only delete your own account!"));
-  // const user = await FacebookUser.findById(req.params.id);
-
-  try {
-    await FacebookUser.findByIdAndDelete(req.params.id);
-    // console.log(listing);
-    // res.clearCookie("access_token");
-    res.status(200).json("User has been deleted!");
-  } catch (error) {
-    next(error);
-  }
+  // const user = await FacebookUser.findByIdAndDelete(req.params.id);
+  const listings = await Listing.find({ postedBy: req.params.id });
+  res.status(200).json(listings);
+  // try {
+  //   await FacebookUser.findByIdAndDelete(req.params.id);
+  //   res.status(200).json("User has been deleted!");
+  // } catch (error) {
+  //   next(error);
+  // }
 };
 
 const deleteGoogleUser = async (req, res) => {
