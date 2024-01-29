@@ -47,12 +47,12 @@ const searchResultListings = async (req, res, next) => {
     const { locatedCountry, fromdate, todate } = req.body;
 
     let result = await Listing.find({
-      from: {
-        $gte: fromdate,
-      },
-      to: {
-        $lte: todate,
-      },
+      // from: {
+      //   $gte: fromdate,
+      // },
+      // to: {
+      //   $lte: todate,
+      // },
       locatedCountry,
     });
     res.json(result);
@@ -70,13 +70,22 @@ const searchResultListings = async (req, res, next) => {
 };
 
 const searchFilterListings = async (req, res, next) => {
-  console.log(req.query);
+  //console.log(req.query);
   try {
     let type = req.query.type;
 
     if (type === undefined || type === "all") {
       type = {
-        $in: ["furnished", "studio", "modern", "flat", "hotel", "hostel"],
+        $in: [
+          "furnished",
+          "studio",
+          "modern",
+          "flat",
+          "hotel",
+          "hostel",
+          "home",
+          "apartment",
+        ],
       };
     }
 
@@ -86,12 +95,17 @@ const searchFilterListings = async (req, res, next) => {
 
     const order = req.query.order || "desc";
 
+    // const listings = await Listing.find({
+    //   locatedCountry: { $regex: searchTerm, $options: "i" },
+    //   //type: { $regex: type, $options: "i" },
+    //   type,
+    // }).sort({ [sort]: order });
     const listings = await Listing.find({
       locatedCountry: { $regex: searchTerm, $options: "i" },
-      type: { $regex: type, $options: "i" },
+      //type: { $regex: type, $options: "i" },
+      roomtype: { $regex: type, $options: "i" },
     }).sort({ [sort]: order });
 
-    //console.log({ listings });
     return res.status(200).json(listings);
   } catch (error) {
     next(error);
