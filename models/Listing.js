@@ -159,6 +159,9 @@ const listingSchema = mongoose.Schema(
     longitude: {
       type: Number,
     },
+    roomArea: {
+      type: Number,
+    },
     postCode: {
       type: Number,
     },
